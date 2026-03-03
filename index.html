@@ -3,42 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تفعيل ثقة ودليل الباي</title>
-    <script src="https://sdk.minepi.com/pi-sdk.js?v=1.3"></script>
+    <title>Trust and Pi Guide - Step 10</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js?v=3"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #f3e5f5; padding: 50px 20px; }
-        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .btn-pay { background: #000; color: #fff; padding: 20px; border-radius: 15px; border: 2px dashed #ffd700; font-size: 18px; font-weight: bold; width: 100%; cursor: pointer; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 40px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; width: 80%; }
+        h1 { color: #5e2d91; font-size: 24px; }
+        p { color: #555; margin-bottom: 30px; }
+        .pay-btn { background-color: #000; color: #fff; border: 2px solid #ffd700; padding: 15px 30px; font-size: 18px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>تفعيل الخطوة 10</h2>
-        <p>باقي تكة واحدة! اضغطي الزر واختاري محفظتك.</p>
-        <button class="btn-pay" onclick="transferPi()">تفعيل بـ 0.1 Pi (تجريبي)</button>
-    </div>
 
-    <script>
-        const Pi = window.Pi;
-        Pi.init({ version: "2.0", sandbox: true });
+<div class="container">
+    <h1>تفعيل مشروع ثقة ودليل الباي</h1>
+    <p>اضغطي على الزر بالأسفل لفتح المحفظة وإتمام الخطوة 10.</p>
+    <button class="pay-btn" onclick="startPayment()">دفع 0.1 Pi (شبكة الفحص)</button>
+</div>
 
-        async function transferPi() {
-            try {
-                const payment = await Pi.createPayment({
-                    amount: 0.1,
-                    memo: "تفعيل مشروع ثقة ودليل الباي",
-                    metadata: { step: 10 }
-                }, {
-                    onReadyForServerApproval: (id) => { console.log("Approved", id); },
-                    onReadyForServerCompletion: (id, tx) => { alert("نجح التفعيل!"); },
-                    onCancel: (id) => { console.log("Canceled"); },
-                    onError: (err) => { alert("افتحي محفظتك أولاً wallet.pi"); }
-                });
-            } catch (e) {
-                // تم تصحيح هذا السطر ليعرض رسالة نظيفة بدون علامات تنصيص زائدة
-                alert("يرجى الدخول من زر Start في الخطوة 10 داخل Checklist");
-            }
+<script>
+    const Pi = window.Pi;
+    Pi.init({ version: "2.0", sandbox: true });
+
+    async function startPayment() {
+        try {
+            const payment = await Pi.createPayment({
+                amount: 0.1,
+                memo: "Final Test Step 10",
+                metadata: { project: "TrustAndPi" }
+            }, {
+                onReadyForServerApproval: (paymentId) => {
+                    console.log("Approved ID:", paymentId);
+                },
+                onReadyForServerCompletion: (paymentId, txid) => {
+                    alert("تهانينا! تم التفعيل بنجاح.");
+                },
+                onCancel: (paymentId) => {
+                    console.log("User cancelled payment");
+                },
+                onError: (error, payment) => {
+                    console.error("Payment Error:", error);
+                    alert("تأكدي من فتح محفظة Testnet أولاً.");
+                }
+            });
+        } catch (err) {
+            alert("يرجى التأكد من الدخول عبر زر Start في قائمة المهام (Checklist)");
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
